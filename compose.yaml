@@ -1,0 +1,19 @@
+name: keyloop-scheduler
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: scheduler_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: scheduler
+    ports:
+      - '127.0.0.1:${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - scheduler-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U scheduler_admin -d scheduler']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  scheduler-data:
